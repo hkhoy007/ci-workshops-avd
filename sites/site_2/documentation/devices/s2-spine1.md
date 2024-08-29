@@ -20,7 +20,7 @@
   - [Spanning Tree Device Configuration](#spanning-tree-device-configuration)
 - [Internal VLAN Allocation Policy](#internal-vlan-allocation-policy)
   - [Internal VLAN Allocation Policy Summary](#internal-vlan-allocation-policy-summary)
-  - [Internal VLAN Allocation Policy Configuration](#internal-vlan-allocation-policy-configuration)
+  - [Internal VLAN Allocation Policy Device Configuration](#internal-vlan-allocation-policy-device-configuration)
 - [VLANs](#vlans)
   - [VLANs Summary](#vlans-summary)
   - [VLANs Device Configuration](#vlans-device-configuration)
@@ -50,13 +50,13 @@
 
 ##### IPv4
 
-| Management Interface | description | Type | VRF | IP Address | Gateway |
+| Management Interface | Description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
 | Management0 | oob_management | oob | default | 192.168.0.20/24 | 192.168.0.1 |
 
 ##### IPv6
 
-| Management Interface | description | Type | VRF | IPv6 Address | IPv6 Gateway |
+| Management Interface | Description | Type | VRF | IPv6 Address | IPv6 Gateway |
 | -------------------- | ----------- | ---- | --- | ------------ | ------------ |
 | Management0 | oob_management | oob | default | - | - |
 
@@ -72,7 +72,7 @@ interface Management0
 
 ### DNS Domain
 
-#### DNS domain: atd.lab
+DNS domain: atd.lab
 
 #### DNS Domain Device Configuration
 
@@ -112,7 +112,7 @@ ntp server 192.168.0.1 iburst local-interface Management0
 | -------- | -------- | -------- |
 | default | - | - |
 
-#### Management API HTTP Configuration
+#### Management API HTTP Device Configuration
 
 ```eos
 !
@@ -139,6 +139,7 @@ management api http-commands
 ```eos
 !
 username arista privilege 15 role network-admin secret sha512 <removed>
+username arista ssh-key ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDB4S3vQNDT7W4vqYWG2dSqjnHhCMt6j/siOGX9GISKXcoORE2Kml2RkvvM/UxHa2nf1zipN2/aavdyRhXHY8i2t+DK393Hnz+UInYnEwliI+CRUQhVNkmBcVe1I4fT1XS9/6zWIzQ8+/X/qyQeQ8pJXjDH2NjzbE8yoPQnxqhzbKCZcVVzr/2EkTshrGPJ0ScYbO0LjkLHrDpKTXWKiHRty7tjkgdHe5XnjH2BBXg/7Ac2xLP3vdRKS2tBYsG1dt2/ITn5XME5wA/GN5DCZZEeL7tr3UJk6oUvXJsD7m2D91vbdkZQrKSqcyo3U8GuuCf/FLAPmgUtj1PMwt9WqCI9 arista@ci-workshop-1-521b3fad-eos.c.atds-280712.internal
 ```
 
 ### AAA Authorization
@@ -233,7 +234,7 @@ spanning-tree mst 0 priority 4096
 | ------------------| --------------- | ------------ |
 | ascending | 1006 | 1199 |
 
-### Internal VLAN Allocation Policy Configuration
+### Internal VLAN Allocation Policy Device Configuration
 
 ```eos
 !
@@ -248,6 +249,7 @@ vlan internal order ascending range 1006 1199
 | ------- | ---- | ------------ |
 | 30 | Thirty | - |
 | 40 | Forty | - |
+| 45 | Forty-five | - |
 | 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
 | 4094 | MLAG_PEER | MLAG |
 
@@ -260,6 +262,9 @@ vlan 30
 !
 vlan 40
    name Forty
+!
+vlan 45
+   name Forty-five
 !
 vlan 4093
    name LEAF_PEER_L3
@@ -406,7 +411,6 @@ interface Port-Channel4
 | --------- | ----------- | --- | ------------ |
 | Loopback0 | Router_ID | default | - |
 
-
 #### Loopback Interfaces Device Configuration
 
 ```eos
@@ -426,6 +430,7 @@ interface Loopback0
 | --------- | ----------- | --- | ---- | -------- |
 | Vlan30 | Thirty | default | - | False |
 | Vlan40 | Forty | default | - | False |
+| Vlan45 | Forty-five | default | - | False |
 | Vlan4093 | MLAG_PEER_L3_PEERING | default | 1500 | False |
 | Vlan4094 | MLAG_PEER | default | 1500 | False |
 
@@ -435,7 +440,8 @@ interface Loopback0
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
 | Vlan30 |  default  |  10.30.30.2/24  |  -  |  10.30.30.1  |  -  |  -  |  -  |
 | Vlan40 |  default  |  10.40.40.2/24  |  -  |  10.40.40.1  |  -  |  -  |  -  |
-| Vlan4093 |  default  |  10.2.254.0/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan45 |  default  |  10.45.45.2/24  |  -  |  10.45.45.1  |  -  |  -  |  -  |
+| Vlan4093 |  default  |  10.2.253.2/31  |  -  |  -  |  -  |  -  |  -  |
 | Vlan4094 |  default  |  10.2.253.0/31  |  -  |  -  |  -  |  -  |  -  |
 
 #### VLAN Interfaces Device Configuration
@@ -454,11 +460,17 @@ interface Vlan40
    ip address 10.40.40.2/24
    ip virtual-router address 10.40.40.1
 !
+interface Vlan45
+   description Forty-five
+   no shutdown
+   ip address 10.45.45.2/24
+   ip virtual-router address 10.45.45.1
+!
 interface Vlan4093
    description MLAG_PEER_L3_PEERING
    no shutdown
    mtu 1500
-   ip address 10.2.254.0/31
+   ip address 10.2.253.2/31
    ip ospf network point-to-point
    ip ospf area 0.0.0.0
 !
@@ -485,9 +497,9 @@ service routing protocols model multi-agent
 
 #### Virtual Router MAC Address Summary
 
-##### Virtual Router MAC Address: 00:1c:73:00:dc:01
+Virtual Router MAC Address: 00:1c:73:00:dc:01
 
-#### Virtual Router MAC Address Configuration
+#### Virtual Router MAC Address Device Configuration
 
 ```eos
 !
@@ -522,8 +534,8 @@ ip routing
 
 #### Static Routes Summary
 
-| VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
-| --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
+| VRF | Destination Prefix | Next Hop IP | Exit interface | Administrative Distance | Tag | Route Name | Metric |
+| --- | ------------------ | ----------- | -------------- | ----------------------- | --- | ---------- | ------ |
 | default | 0.0.0.0/0 | 192.168.0.1 | - | 1 | - | - | - |
 
 #### Static Routes Device Configuration

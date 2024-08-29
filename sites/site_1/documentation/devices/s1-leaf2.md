@@ -20,7 +20,7 @@
   - [Spanning Tree Device Configuration](#spanning-tree-device-configuration)
 - [Internal VLAN Allocation Policy](#internal-vlan-allocation-policy)
   - [Internal VLAN Allocation Policy Summary](#internal-vlan-allocation-policy-summary)
-  - [Internal VLAN Allocation Policy Configuration](#internal-vlan-allocation-policy-configuration)
+  - [Internal VLAN Allocation Policy Device Configuration](#internal-vlan-allocation-policy-device-configuration)
 - [VLANs](#vlans)
   - [VLANs Summary](#vlans-summary)
   - [VLANs Device Configuration](#vlans-device-configuration)
@@ -47,13 +47,13 @@
 
 ##### IPv4
 
-| Management Interface | description | Type | VRF | IP Address | Gateway |
+| Management Interface | Description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
 | Management0 | oob_management | oob | default | 192.168.0.13/24 | 192.168.0.1 |
 
 ##### IPv6
 
-| Management Interface | description | Type | VRF | IPv6 Address | IPv6 Gateway |
+| Management Interface | Description | Type | VRF | IPv6 Address | IPv6 Gateway |
 | -------------------- | ----------- | ---- | --- | ------------ | ------------ |
 | Management0 | oob_management | oob | default | - | - |
 
@@ -69,7 +69,7 @@ interface Management0
 
 ### DNS Domain
 
-#### DNS domain: atd.lab
+DNS domain: atd.lab
 
 #### DNS Domain Device Configuration
 
@@ -109,7 +109,7 @@ ntp server 192.168.0.1 iburst local-interface Management0
 | -------- | -------- | -------- |
 | default | - | - |
 
-#### Management API HTTP Configuration
+#### Management API HTTP Device Configuration
 
 ```eos
 !
@@ -136,6 +136,7 @@ management api http-commands
 ```eos
 !
 username arista privilege 15 role network-admin secret sha512 <removed>
+username arista ssh-key ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDB4S3vQNDT7W4vqYWG2dSqjnHhCMt6j/siOGX9GISKXcoORE2Kml2RkvvM/UxHa2nf1zipN2/aavdyRhXHY8i2t+DK393Hnz+UInYnEwliI+CRUQhVNkmBcVe1I4fT1XS9/6zWIzQ8+/X/qyQeQ8pJXjDH2NjzbE8yoPQnxqhzbKCZcVVzr/2EkTshrGPJ0ScYbO0LjkLHrDpKTXWKiHRty7tjkgdHe5XnjH2BBXg/7Ac2xLP3vdRKS2tBYsG1dt2/ITn5XME5wA/GN5DCZZEeL7tr3UJk6oUvXJsD7m2D91vbdkZQrKSqcyo3U8GuuCf/FLAPmgUtj1PMwt9WqCI9 arista@ci-workshop-1-521b3fad-eos.c.atds-280712.internal
 ```
 
 ### AAA Authorization
@@ -180,7 +181,7 @@ daemon TerminAttr
 
 | Domain-id | Local-interface | Peer-address | Peer-link |
 | --------- | --------------- | ------------ | --------- |
-| RACK1 | Vlan4094 | 10.1.253.4 | Port-Channel1 |
+| RACK1 | Vlan4094 | 10.1.253.0 | Port-Channel1 |
 
 Dual primary detection is disabled.
 
@@ -191,7 +192,7 @@ Dual primary detection is disabled.
 mlag configuration
    domain-id RACK1
    local-interface Vlan4094
-   peer-address 10.1.253.4
+   peer-address 10.1.253.0
    peer-link Port-Channel1
    reload-delay mlag 300
    reload-delay non-mlag 330
@@ -230,7 +231,7 @@ spanning-tree mst 0 priority 16384
 | ------------------| --------------- | ------------ |
 | ascending | 1006 | 1199 |
 
-### Internal VLAN Allocation Policy Configuration
+### Internal VLAN Allocation Policy Device Configuration
 
 ```eos
 !
@@ -358,7 +359,7 @@ interface Port-Channel4
 
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan4094 |  default  |  10.1.253.5/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan4094 |  default  |  10.1.253.1/31  |  -  |  -  |  -  |  -  |  -  |
 
 #### VLAN Interfaces Device Configuration
 
@@ -369,7 +370,7 @@ interface Vlan4094
    no shutdown
    mtu 1500
    no autostate
-   ip address 10.1.253.5/31
+   ip address 10.1.253.1/31
 ```
 
 ## Routing
@@ -409,8 +410,8 @@ service routing protocols model multi-agent
 
 #### Static Routes Summary
 
-| VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
-| --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
+| VRF | Destination Prefix | Next Hop IP | Exit interface | Administrative Distance | Tag | Route Name | Metric |
+| --- | ------------------ | ----------- | -------------- | ----------------------- | --- | ---------- | ------ |
 | default | 0.0.0.0/0 | 192.168.0.1 | - | 1 | - | - | - |
 
 #### Static Routes Device Configuration
